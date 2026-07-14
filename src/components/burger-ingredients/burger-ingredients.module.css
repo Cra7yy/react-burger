@@ -13,3 +13,18 @@
   text-align: center;
   list-style-type: none;
 }
+
+.block_ingredients {
+  overflow: auto;
+}
+
+.block_cards {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.ingredient_section {
+  margin: 20px 0;
+}

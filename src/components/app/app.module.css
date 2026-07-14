@@ -21,3 +21,17 @@
   margin: 0 auto;
   overflow: hidden;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 50vh;
+}
+
+.error {
+  width: 100%;
+  margin-top: 40px;
+  text-align: center;
+}
