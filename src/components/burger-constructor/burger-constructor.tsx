@@ -264,7 +264,7 @@ export const BurgerConstructor = (): JSX.Element => {
           type="primary"
           htmlType="button"
           extraClass="ml-10"
-          disabled={orderStatus === 'loading'}
+          disabled={orderStatus === 'loading' || bun === null}
         >
           Оформить заказ
         </Button>

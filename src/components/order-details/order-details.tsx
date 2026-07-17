@@ -1,4 +1,4 @@
-import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
+import { CheckMarkIcon, Preloader } from '@krgaa/react-developer-burger-ui-components';
 
 import { useAppSelector } from '@services/hooks';
 import {
@@ -34,7 +34,9 @@ export const OrderDetails = (_props: TOrderDetailsProps): JSX.Element => {
   if (status === 'loading' || number === null) {
     return (
       <div className={styles.details}>
-        <p className={`${styles.number} text text_type_digits-large mb-8`}>...</p>
+        <div className="mb-8">
+          <Preloader />
+        </div>
         <p className="text text_type_main-medium mb-15">Создаём заказ</p>
         <p className="text text_type_main-default text_color_inactive">
           Дождитесь ответа сервера

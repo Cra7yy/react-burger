@@ -80,7 +80,7 @@ const orderSlice = createSlice({
         state.status = 'loading';
         state.error = null;
         state.number = null;
-        state.isModalOpen = false;
+        state.isModalOpen = true;
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.status = 'succeeded';
