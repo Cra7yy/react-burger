@@ -3,17 +3,19 @@
   flex-direction: column;
   width: 100%;
   max-width: 600px;
+  height: 100%;
   padding-bottom: 20px;
 }
 
 .burger_constructor_hover {
   display: flex;
   flex-direction: column;
-  height: 90%;
+  height: 88%;
 }
 
 .burger_constructor_list {
   flex-grow: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 

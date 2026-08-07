@@ -9,6 +9,12 @@
   cursor: pointer;
 }
 
+.counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .block_price {
   display: flex;
   justify-content: center;
