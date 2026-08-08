@@ -5,6 +5,14 @@ import type { TIngredient } from '@utils/types';
 
 export const selectIngredients = (state: RootState): TIngredient[] =>
   state.ingredients.items;
+export const selectAuthUser = (state: RootState): RootState['auth']['user'] =>
+  state.auth.user;
+export const selectAuthStatus = (state: RootState): RootState['auth']['status'] =>
+  state.auth.status;
+export const selectAuthError = (state: RootState): string | null => state.auth.error;
+export const selectIsAuthChecked = (
+  state: RootState
+): RootState['auth']['isAuthChecked'] => state.auth.isAuthChecked;
 export const selectIngredientsStatus = (
   state: RootState
 ): RootState['ingredients']['status'] => state.ingredients.status;
