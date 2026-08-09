@@ -15,7 +15,19 @@
   height: 64px;
 }
 
-.navigation a:hover {
+.link {
+  text-decoration: none;
+}
+
+.link_inactive {
+  color: #8585ad;
+}
+
+.link_active {
+  color: white;
+}
+
+.link:hover {
   color: white;
 }
 

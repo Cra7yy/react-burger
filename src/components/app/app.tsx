@@ -19,11 +19,12 @@ import { ResetPasswordPage } from '@pages/reset-password-page/reset-password-pag
 import { checkUserAuth } from '@services/auth-slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { fetchIngredients } from '@services/ingredients-slice';
-import { closeOrderModal } from '@services/order-slice';
-import { selectOrderModalOpen } from '@services/selectors';
+import { createOrder, closeOrderModal } from '@services/order-slice';
+import { selectAuthUser, selectOrderModalOpen } from '@services/selectors';
 import {
   INGREDIENT_MODAL_BACKGROUND_KEY,
   INGREDIENT_MODAL_OPEN_KEY,
+  PENDING_ORDER_KEY,
 } from '@utils/constants';
 
 import type { Location } from 'react-router-dom';
@@ -57,6 +58,7 @@ const getStoredBackgroundLocation = (location: Location): Location | null => {
 
 export const App = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectAuthUser);
   const isOrderModalOpen = useAppSelector(selectOrderModalOpen);
   const location = useLocation();
   const navigate = useNavigate();
@@ -83,6 +85,15 @@ export const App = (): React.JSX.Element => {
     void dispatch(fetchIngredients());
     void dispatch(checkUserAuth());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!user || sessionStorage.getItem(PENDING_ORDER_KEY) !== 'true') {
+      return;
+    }
+
+    sessionStorage.removeItem(PENDING_ORDER_KEY);
+    void dispatch(createOrder());
+  }, [dispatch, user]);
 
   return (
     <div className={styles.app}>

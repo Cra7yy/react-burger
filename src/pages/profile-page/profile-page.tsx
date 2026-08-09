@@ -22,7 +22,9 @@ export const ProfilePage = (): JSX.Element => {
             <NavLink
               to="/profile"
               end
-              className={({ isActive }) => (isActive ? '' : 'text_color_inactive')}
+              className={({ isActive }) =>
+                `${styles.link} ${isActive ? styles.link_active : styles.link_inactive}`
+              }
             >
               Профиль
             </NavLink>
@@ -30,7 +32,9 @@ export const ProfilePage = (): JSX.Element => {
           <li>
             <NavLink
               to="orders"
-              className={({ isActive }) => (isActive ? '' : 'text_color_inactive')}
+              className={({ isActive }) =>
+                `${styles.link} ${isActive ? styles.link_active : styles.link_inactive}`
+              }
             >
               История заказов
             </NavLink>
