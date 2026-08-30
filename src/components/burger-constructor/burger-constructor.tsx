@@ -6,6 +6,7 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   addIngredient,
@@ -15,11 +16,13 @@ import {
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { createOrder } from '@services/order-slice';
 import {
+  selectAuthUser,
   selectConstructorBun,
   selectConstructorIngredients,
   selectConstructorTotalPrice,
   selectOrderStatus,
 } from '@services/selectors';
+import { PENDING_ORDER_KEY } from '@utils/constants';
 
 import type { TConstructorIngredient, TIngredient } from '@utils/types';
 import type { JSX } from 'react';
@@ -106,6 +109,9 @@ const ConstructorIngredientRow = ({
 
 export const BurgerConstructor = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useAppSelector(selectAuthUser);
   const bun = useAppSelector(selectConstructorBun);
   const ingredients = useAppSelector(selectConstructorIngredients);
   const totalPrice = useAppSelector(selectConstructorTotalPrice);
@@ -163,6 +169,12 @@ export const BurgerConstructor = (): JSX.Element => {
   };
 
   const handleSendOrder = (): void => {
+    if (!user) {
+      sessionStorage.setItem(PENDING_ORDER_KEY, 'true');
+      void navigate('/login', { state: { from: location } });
+      return;
+    }
+
     void dispatch(createOrder());
   };
 

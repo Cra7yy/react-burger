@@ -24,6 +24,34 @@ export type TApiResponse<TData> = {
   data: TData;
 };
 
+export type TUser = {
+  email: string;
+  name: string;
+};
+
+export type TAuthResponse = {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+  user: TUser;
+};
+
+export type TRefreshTokenResponse = {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type TUserResponse = {
+  success: boolean;
+  user: TUser;
+};
+
+export type TMessageResponse = {
+  success: boolean;
+  message: string;
+};
+
 export type TOrderResponse = {
   success: boolean;
   name: string;

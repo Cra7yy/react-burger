@@ -1,8 +1,11 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd';
+import { Link, useLocation } from 'react-router-dom';
 
-import { useAppDispatch } from '@services/hooks';
-import { selectIngredient } from '@services/selected-ingredient-slice';
+import {
+  INGREDIENT_MODAL_BACKGROUND_KEY,
+  INGREDIENT_MODAL_OPEN_KEY,
+} from '@utils/constants';
 
 import type { TIngredient } from '@utils/types';
 import type { JSX } from 'react';
@@ -20,7 +23,7 @@ export const BurgerIngredientCard = ({
   data,
   count,
 }: TBurgerIngredientCardProps): JSX.Element => {
-  const dispatch = useAppDispatch();
+  const location = useLocation();
   const { name, price, image } = data;
   const [{ isDragging }, drag] = useDrag({
     type: DND_TYPE,
@@ -30,21 +33,24 @@ export const BurgerIngredientCard = ({
     }),
   });
 
-  const setRef = (node: HTMLButtonElement | null): void => {
+  const setRef = (node: HTMLAnchorElement | null): void => {
     drag(node);
   };
 
   const handleClick = (): void => {
-    dispatch(selectIngredient(data));
+    localStorage.setItem(INGREDIENT_MODAL_OPEN_KEY, 'true');
+    localStorage.setItem(INGREDIENT_MODAL_BACKGROUND_KEY, location.pathname);
   };
 
   return (
-    <button
+    <Link
       ref={setRef}
-      type="button"
+      to={`/ingredients/${data._id}`}
       className={styles.card}
+      state={{ backgroundLocation: location }}
       onClick={handleClick}
       style={{ opacity: isDragging ? 0.5 : 1 }}
+      aria-label={name}
     >
       {count > 0 && <Counter count={count} size="default" extraClass={styles.counter} />}
       <img src={image} alt={name} />
@@ -53,6 +59,6 @@ export const BurgerIngredientCard = ({
         <CurrencyIcon type="primary" />
       </div>
       <p className={`${styles.name} text text_type_main-default`}>{name}</p>
-    </button>
+    </Link>
   );
 };

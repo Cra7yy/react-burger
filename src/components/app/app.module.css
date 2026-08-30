@@ -5,33 +5,3 @@
   color: var(--text-primary-color);
   background-color: var(--background-alt);
 }
-
-.title {
-  width: 100%;
-  max-width: 1260px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.main {
-  display: flex;
-  justify-content: space-between;
-  width: 1240px;
-  height: 100%;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 50vh;
-}
-
-.error {
-  width: 100%;
-  margin-top: 40px;
-  text-align: center;
-}

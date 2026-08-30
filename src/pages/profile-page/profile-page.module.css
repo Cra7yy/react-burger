@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 1240px;
+  margin: 120px auto 0;
+}
+
+.navigation {
+  width: 320px;
+}
+
+.navigation li {
+  display: flex;
+  align-items: center;
+  height: 64px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.link_inactive {
+  color: #8585ad;
+}
+
+.link_active {
+  color: white;
+}
+
+.link:hover {
+  color: white;
+}
+
+.logoutButton {
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  color: white;
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
+}
+
+.note {
+  color: #8585ad;
+  opacity: 0.4;
+}
