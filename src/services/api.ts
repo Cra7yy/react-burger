@@ -3,6 +3,7 @@ import { API_DOMAIN } from '@utils/constants';
 import type {
   TAuthResponse,
   TMessageResponse,
+  TOrdersResponse,
   TRefreshTokenResponse,
   TUserResponse,
 } from '@utils/types';
@@ -194,6 +195,9 @@ export const updateUserRequest = (data: {
     },
     body: JSON.stringify(data),
   });
+
+export const getOrderRequest = (id: string): Promise<TOrdersResponse> =>
+  requestJson<TOrdersResponse>(`${ORDERS_URL}/${id}`);
 
 export const forgotPasswordRequest = (email: string): Promise<TMessageResponse> =>
   requestJson<TMessageResponse>(PASSWORD_RESET_URL, {

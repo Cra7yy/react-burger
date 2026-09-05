@@ -1,0 +1,14 @@
+.content {
+  max-height: 366px;
+  overflow: auto;
+}
+
+.status_done {
+  color: #0cc;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -6,6 +6,7 @@ import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
 import { ProtectedRoute } from '@components/protected-route/protected-route';
 import { FeedPage } from '@pages/feed-page/feed-page';
+import { FeedModalOrders } from '@pages/feed-page/feed-page-modal-orders';
 import { ForgotPasswordPage } from '@pages/forgot-password-page/forgot-password-page';
 import { HomePage } from '@pages/home/home';
 import { IngredientPage } from '@pages/ingredient-page/ingredient-page';
@@ -13,6 +14,7 @@ import { LoginPage } from '@pages/login-page/login-page';
 import { NotFoundPage } from '@pages/not-found-page/not-found-page';
 import { ProfileFormPage } from '@pages/profile-form-page/profile-form-page';
 import { ProfileOrderPage } from '@pages/profile-order-page/profile-order-page';
+import { ModalOrder as ProfileOrderModal } from '@pages/profile-order-page/profile-order-page-modal';
 import { ProfilePage } from '@pages/profile-page/profile-page';
 import { RegisterPage } from '@pages/register-page/register-page';
 import { ResetPasswordPage } from '@pages/reset-password-page/reset-password-page';
@@ -101,7 +103,9 @@ export const App = (): React.JSX.Element => {
       <Routes location={displayLocation}>
         <Route path="/" element={<HomePage />} />
         <Route path="/ingredients/:id" element={<IngredientPage />} />
-        <Route path="/feed" element={<FeedPage />} />
+        <Route path="/feed" element={<FeedPage />}>
+          <Route path=":id" element={<FeedModalOrders />} />
+        </Route>
         <Route
           path="/login"
           element={
@@ -143,7 +147,9 @@ export const App = (): React.JSX.Element => {
           }
         >
           <Route index element={<ProfileFormPage />} />
-          <Route path="orders" element={<ProfileOrderPage />} />
+          <Route path="orders" element={<ProfileOrderPage />}>
+            <Route path=":id" element={<ProfileOrderModal />} />
+          </Route>
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
@@ -157,6 +163,12 @@ export const App = (): React.JSX.Element => {
               </Modal>
             }
           />
+        </Routes>
+      )}
+      {backgroundLocation && (
+        <Routes>
+          <Route path="/feed/:id" element={<FeedModalOrders />} />
+          <Route path="/profile/orders/:id" element={<ProfileOrderModal />} />
         </Routes>
       )}
       {isOrderModalOpen && (
