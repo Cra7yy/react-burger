@@ -70,8 +70,7 @@ export const FeedPage = (): JSX.Element => {
               <div className={styles.line_list}>
                 {done.map((number) => (
                   <span
-                    style={{ color: '#00CCCC' }}
-                    className="text text_type_digits-default"
+                    className={`${styles.done_number} text text_type_digits-default`}
                     key={number}
                   >
                     {number}

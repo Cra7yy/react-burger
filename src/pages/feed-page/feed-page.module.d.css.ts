@@ -3,6 +3,7 @@ declare const classNames: {
   readonly line: 'line';
   readonly line_block: 'line_block';
   readonly line_list: 'line_list';
+  readonly done_number: 'done_number';
   readonly feed: 'feed';
   readonly title: 'title';
   readonly belt: 'belt';

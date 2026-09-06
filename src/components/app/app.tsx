@@ -103,9 +103,8 @@ export const App = (): React.JSX.Element => {
       <Routes location={displayLocation}>
         <Route path="/" element={<HomePage />} />
         <Route path="/ingredients/:id" element={<IngredientPage />} />
-        <Route path="/feed" element={<FeedPage />}>
-          <Route path=":id" element={<FeedModalOrders />} />
-        </Route>
+        <Route path="/feed" element={<FeedPage />}></Route>
+        <Route path="/feed/:id" element={<FeedModalOrders />} />
         <Route
           path="/login"
           element={
@@ -147,10 +146,16 @@ export const App = (): React.JSX.Element => {
           }
         >
           <Route index element={<ProfileFormPage />} />
-          <Route path="orders" element={<ProfileOrderPage />}>
-            <Route path=":id" element={<ProfileOrderModal />} />
-          </Route>
+          <Route path="orders" element={<ProfileOrderPage />} />
         </Route>
+        <Route
+          path="/profile/orders/:id"
+          element={
+            <ProtectedRoute>
+              <ProfileOrderModal />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       {isIngredientModalOpen && (

@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, type Middleware } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { getAccessToken, getOrderRequest, refreshTokenRequest } from './api';
+import { getAccessToken, getOrderRequest } from './api';
 
 import type { TIngredient, TOrder, TOrderCardUI, TOrdersResponse } from '@utils/types';
 
@@ -76,18 +76,40 @@ const isInvalidTokenResponse = (value: unknown): boolean => {
   return response.success === false && response.message === 'Invalid or missing token';
 };
 
+type TSocketConnectionPayload = {
+  kind: TFeedKind;
+  url: string;
+};
+
+export const ordersWsActions = {
+  connect: 'orders/connect',
+  disconnect: 'orders/disconnect',
+  connected: 'orders/socketConnected',
+  message: 'orders/socketMessage',
+  error: 'orders/socketError',
+  closed: 'orders/socketClosed',
+} as const;
+
 export const connectOrders = (
   kind: TFeedKind
-): { type: string; payload: TFeedKind } => ({
-  type: 'orders/connect',
-  payload: kind,
-});
+): { type: string; payload: TSocketConnectionPayload } => {
+  const token = kind === 'profile' ? getSocketToken() : null;
+  const url =
+    kind === 'profile' && token
+      ? `${socketUrls[kind]}?token=${token}`
+      : socketUrls[kind];
+  return { type: ordersWsActions.connect, payload: { kind, url } };
+};
 export const disconnectOrders = (
   kind: TFeedKind
-): { type: string; payload: TFeedKind } => ({
-  type: 'orders/disconnect',
-  payload: kind,
-});
+): { type: string; payload: TSocketConnectionPayload } => {
+  const token = kind === 'profile' ? getSocketToken() : null;
+  const url =
+    kind === 'profile' && token
+      ? `${socketUrls[kind]}?token=${token}`
+      : socketUrls[kind];
+  return { type: ordersWsActions.disconnect, payload: { kind, url } };
+};
 
 const ordersSlice = createSlice({
   name: 'orders',
@@ -96,6 +118,44 @@ const ordersSlice = createSlice({
     ordersConnected: (state, action: { payload: TFeedKind }) => {
       state[action.payload].status = 'connected';
       state[action.payload].error = null;
+    },
+    socketConnected: (state, action: PayloadAction<TSocketConnectionPayload>) => {
+      state[action.payload.kind].status = 'connected';
+      state[action.payload.kind].error = null;
+    },
+    socketMessage: (
+      state,
+      action: PayloadAction<unknown, string, TSocketConnectionPayload>
+    ) => {
+      const { kind } = action.meta;
+      if (isInvalidTokenResponse(action.payload)) {
+        state[kind].status = 'failed';
+        state[kind].error = 'Сессия истекла. Выполните вход снова.';
+        return;
+      }
+      const data = parseOrdersResponse(action.payload);
+      if (!data) {
+        state[kind].status = 'failed';
+        state[kind].error = 'Сервер вернул некорректные данные';
+        return;
+      }
+      state[kind].orders = data.orders;
+      state[kind].total = data.total;
+      state[kind].totalToday = data.totalToday;
+      state[kind].status = 'connected';
+      state[kind].error = null;
+    },
+    socketError: (
+      state,
+      action: PayloadAction<string, string, TSocketConnectionPayload>
+    ) => {
+      state[action.meta.kind].status = 'failed';
+      state[action.meta.kind].error = action.payload;
+    },
+    socketClosed: (state, action: PayloadAction<TSocketConnectionPayload>) => {
+      if (state[action.payload.kind].status === 'connected') {
+        state[action.payload.kind].status = 'idle';
+      }
     },
     ordersReceived: (
       state,
@@ -160,124 +220,6 @@ const getSocketToken = (): string | null => {
   const token = getAccessToken();
   if (!token) return null;
   return token.replace(/^Bearer\s+/i, '');
-};
-
-const retireSocket = (socket: WebSocket): void => {
-  socket.onmessage = null;
-  socket.onerror = null;
-  socket.onclose = null;
-
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.close();
-    return;
-  }
-
-  if (socket.readyState === WebSocket.CONNECTING) {
-    socket.onopen = (): void => {
-      socket.close();
-    };
-  }
-};
-
-export const ordersMiddleware: Middleware = (store) => {
-  const sockets: Partial<Record<TFeedKind, WebSocket>> = {};
-  const tokenRefreshInProgress = new Set<TFeedKind>();
-
-  return (next) =>
-    (action): unknown => {
-      const result = next(action);
-      if (!action || typeof action !== 'object' || !('type' in action)) return result;
-      const typedAction = action as { type: string; payload?: TFeedKind };
-
-      if (typedAction.type === 'orders/connect' && typedAction.payload) {
-        const kind = typedAction.payload;
-        if (sockets[kind]) {
-          retireSocket(sockets[kind]);
-          delete sockets[kind];
-        }
-        const token = kind === 'profile' ? getSocketToken() : null;
-        if (kind === 'profile' && !token) {
-          store.dispatch(
-            ordersSlice.actions.ordersConnectionFailed({
-              kind,
-              error: 'Требуется авторизация',
-            })
-          );
-          return result;
-        }
-        const url =
-          kind === 'profile' && token
-            ? `${socketUrls[kind]}?token=${token}`
-            : socketUrls[kind];
-        const socket = new WebSocket(url);
-        sockets[kind] = socket;
-        socket.onopen = (): void => {
-          if (sockets[kind] !== socket) {
-            socket.close();
-            return;
-          }
-          store.dispatch(ordersSlice.actions.ordersConnected(kind));
-        };
-        socket.onmessage = (event): void => {
-          try {
-            const data: unknown = JSON.parse(event.data as string);
-            if (kind === 'profile' && isInvalidTokenResponse(data)) {
-              if (tokenRefreshInProgress.has(kind)) return;
-              tokenRefreshInProgress.add(kind);
-              void refreshTokenRequest()
-                .then(() => {
-                  tokenRefreshInProgress.delete(kind);
-                  store.dispatch(connectOrders(kind));
-                })
-                .catch(() => {
-                  tokenRefreshInProgress.delete(kind);
-                  store.dispatch(
-                    ordersSlice.actions.ordersConnectionFailed({
-                      kind,
-                      error: 'Сессия истекла. Выполните вход снова.',
-                    })
-                  );
-                });
-              return;
-            }
-            const parsedData = parseOrdersResponse(data);
-            if (parsedData) {
-              store.dispatch(
-                ordersSlice.actions.ordersReceived({ kind, data: parsedData })
-              );
-            } else {
-              store.dispatch(
-                ordersSlice.actions.ordersConnectionFailed({
-                  kind,
-                  error: 'Сервер вернул некорректные данные',
-                })
-              );
-            }
-          } catch (_error) {
-            store.dispatch(
-              ordersSlice.actions.ordersConnectionFailed({
-                kind,
-                error: 'Не удалось прочитать данные ленты',
-              })
-            );
-          }
-        };
-        socket.onerror = (): void =>
-          store.dispatch(
-            ordersSlice.actions.ordersConnectionFailed({
-              kind,
-              error: 'Не удалось подключиться к ленте заказов',
-            })
-          );
-      }
-
-      if (typedAction.type === 'orders/disconnect' && typedAction.payload) {
-        const socket = sockets[typedAction.payload];
-        if (socket) retireSocket(socket);
-        delete sockets[typedAction.payload];
-      }
-      return result;
-    };
 };
 
 export const {
