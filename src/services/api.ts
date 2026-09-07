@@ -197,7 +197,9 @@ export const updateUserRequest = (data: {
   });
 
 export const getOrderRequest = (id: string): Promise<TOrdersResponse> =>
-  requestJson<TOrdersResponse>(`${ORDERS_URL}/${id}`);
+  fetchWithRefresh<TOrdersResponse>(`${ORDERS_URL}/${id}`, {
+    method: 'GET',
+  });
 
 export const forgotPasswordRequest = (email: string): Promise<TMessageResponse> =>
   requestJson<TMessageResponse>(PASSWORD_RESET_URL, {

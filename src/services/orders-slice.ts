@@ -204,10 +204,19 @@ export const fetchOrderById = createAsyncThunk<TOrder, string>(
   async (id) => {
     const response = await getOrderRequest(id);
     const parsedResponse = parseOrdersResponse(response);
-    if (!parsedResponse?.orders[0]) {
-      throw new Error('Заказ не найден');
+    if (parsedResponse?.orders[0]) {
+      return parsedResponse.orders[0];
     }
-    return parsedResponse.orders[0];
+
+    const order =
+      typeof response === 'object' && response !== null && 'order' in response
+        ? response.order
+        : null;
+    if (isOrder(order)) {
+      return order;
+    }
+
+    throw new Error('Заказ не найден');
   }
 );
 
