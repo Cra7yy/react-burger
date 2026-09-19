@@ -3,6 +3,7 @@ import { API_DOMAIN } from '@utils/constants';
 import type {
   TAuthResponse,
   TMessageResponse,
+  TOrdersResponse,
   TRefreshTokenResponse,
   TUserResponse,
 } from '@utils/types';
@@ -193,6 +194,11 @@ export const updateUserRequest = (data: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+  });
+
+export const getOrderRequest = (id: string): Promise<TOrdersResponse> =>
+  fetchWithRefresh<TOrdersResponse>(`${ORDERS_URL}/${id}`, {
+    method: 'GET',
   });
 
 export const forgotPasswordRequest = (email: string): Promise<TMessageResponse> =>

@@ -1,0 +1,16 @@
+.content {
+  display: flex;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  width: 414px;
+}
+
+.price {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+}

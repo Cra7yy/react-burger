@@ -15,6 +15,37 @@ export type TIngredient = {
 
 export type TIngredientType = 'bun' | 'main' | 'sauce';
 
+export type TOrderStatus = 'created' | 'pending' | 'done';
+
+export type TOrder = {
+  _id: string;
+  ingredients: string[];
+  name?: string;
+  status: TOrderStatus;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TOrdersResponse = {
+  success: boolean;
+  orders: TOrder[];
+  total: number;
+  totalToday: number;
+};
+
+export type TIngredientUI = TIngredient;
+
+export type TOrderCardUI = {
+  id: string;
+  number: number;
+  name: string;
+  status: TOrderStatus;
+  date: string;
+  price: number;
+  ingredients: TIngredientUI[];
+};
+
 export type TConstructorIngredient = TIngredient & {
   uid: string;
 };
