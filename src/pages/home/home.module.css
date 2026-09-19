@@ -1,6 +1,6 @@
 .title {
-  box-sizing: border-box;
-  width: min(1260px, calc(100% - 40px));
+  width: 100%;
+  max-width: 1260px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -8,8 +8,7 @@
 .main {
   display: flex;
   justify-content: space-between;
-  box-sizing: border-box;
-  width: min(1240px, calc(100% - 40px));
+  width: 1240px;
   height: 100%;
   margin: 0 auto;
   overflow: hidden;
