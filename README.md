@@ -36,3 +36,5 @@
 		'@utils': path.resolve(__dirname, './src/utils'),
 	},
 ```
+
+GitHub Pages: [https://cra7yy.github.io/react-burger/](https://cra7yy.github.io/react-burger/)
