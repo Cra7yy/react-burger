@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { fetchIngredients, ingredientsReducer } from './ingredients-slice';
+import { fetchIngredients, ingredientsReducer, initialState } from './ingredients-slice';
 
 import type { TIngredient } from '@utils/types';
 
@@ -37,11 +37,7 @@ const ingredients: TIngredient[] = [
 
 describe('ingredientsReducer', () => {
   it('has the correct initial state', () => {
-    expect(ingredientsReducer(undefined, { type: '@INIT' })).toEqual({
-      items: [],
-      status: 'idle',
-      error: null,
-    });
+    expect(ingredientsReducer(undefined, { type: '@INIT' })).toEqual(initialState);
   });
 
   it('sets loading status when request starts', () => {

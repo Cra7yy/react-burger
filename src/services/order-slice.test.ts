@@ -1,15 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { closeOrderModal, createOrder, orderReducer } from './order-slice';
+import { closeOrderModal, createOrder, initialState, orderReducer } from './order-slice';
 
 describe('orderReducer', () => {
   it('has the correct initial state', () => {
-    expect(orderReducer(undefined, { type: '@INIT' })).toEqual({
-      number: null,
-      status: 'idle',
-      error: null,
-      isModalOpen: false,
-    });
+    expect(orderReducer(undefined, { type: '@INIT' })).toEqual(initialState);
   });
 
   it('closes the order modal', () => {

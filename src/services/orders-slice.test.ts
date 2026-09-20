@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   clearSelectedOrder,
+  initialState,
   ordersConnectionFailed,
   ordersReceived,
   ordersReducer,
@@ -29,13 +30,7 @@ const ordersResponse: TOrdersResponse = {
 
 describe('ordersReducer', () => {
   it('has the correct initial state', () => {
-    expect(ordersReducer(undefined, { type: '@INIT' })).toEqual({
-      feed: { orders: [], total: 0, totalToday: 0, status: 'idle', error: null },
-      profile: { orders: [], total: 0, totalToday: 0, status: 'idle', error: null },
-      selected: null,
-      selectedStatus: 'idle',
-      selectedError: null,
-    });
+    expect(ordersReducer(undefined, { type: '@INIT' })).toEqual(initialState);
   });
 
   it('stores feed data on socket message', () => {

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   addIngredient,
   constructorReducer,
+  initialState,
   moveIngredient,
   removeIngredient,
   setBun,
@@ -43,10 +44,7 @@ const sauce: TIngredient = {
 
 describe('constructorReducer', () => {
   it('has the correct initial state', () => {
-    expect(constructorReducer(undefined, { type: '@INIT' })).toEqual({
-      bun: null,
-      ingredients: [],
-    });
+    expect(constructorReducer(undefined, { type: '@INIT' })).toEqual(initialState);
   });
 
   it('adds bun to constructor', () => {

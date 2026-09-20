@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   authReducer,
   checkUserAuth,
+  initialState,
   loginUser,
   logoutUser,
   registerUser,
@@ -18,12 +19,7 @@ const user: TUser = {
 
 describe('authReducer', () => {
   it('has the correct initial state', () => {
-    expect(authReducer(undefined, { type: '@INIT' })).toEqual({
-      user: null,
-      isAuthChecked: false,
-      status: 'idle',
-      error: null,
-    });
+    expect(authReducer(undefined, { type: '@INIT' })).toEqual(initialState);
   });
 
   it('sets auth check pending state', () => {

@@ -13,7 +13,7 @@ type TOrderState = {
   isModalOpen: boolean;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   number: null,
   status: 'idle',
   error: null,

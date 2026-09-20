@@ -27,7 +27,7 @@ export type TOrdersState = {
   selectedError: string | null;
 };
 
-const initialState: TOrdersState = {
+export const initialState: TOrdersState = {
   feed: { orders: [], total: 0, totalToday: 0, status: 'idle', error: null },
   profile: { orders: [], total: 0, totalToday: 0, status: 'idle', error: null },
   selected: null,
